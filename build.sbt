@@ -1,8 +1,10 @@
+import play.core.PlayVersion
+
 parallelExecution in Global := false
 
 val commonSettings = Seq(
   organization := "org.julienrf",
-  version := "1.6.0",
+  version := "1.6.0-SNAPSHOT",
   scalaVersion := "2.10.0"
 )
 
@@ -61,6 +63,12 @@ lazy val sampleJava = Project("sample-java", file("sample-java"))
   .settings(play.Project.playJavaSettings: _*)
   .dependsOn(jsmessages)
 
+lazy val playJsmessagesPlugin = Project("jsmessages-plugin", file("plugin"))
+  .settings(commonSettings: _*)
+  .settings(addSbtPlugin("com.typesafe.play" % "sbt-plugin" % PlayVersion.current))
+  .settings(sbtPlugin := true)
+  .dependsOn(jsmessages)
+
 lazy val playJsmessages = project.in(file("."))
   .settings(commonSettings: _*)
-  .aggregate(jsmessages, sampleScala, sampleJava)
+  .aggregate(jsmessages, playJsmessagesPlugin, sampleScala, sampleJava)
